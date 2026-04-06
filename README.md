@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ApplyAI
 
-## Getting Started
+ApplyAI helps you write a cover letter faster.
 
-First, run the development server:
+You paste a job description, then the app uses your resume as context and generates a short 3-paragraph cover letter.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## What The App Does
+
+- Takes a job description from the user.
+- Loads `resume.md` as plain-text reference.
+- Sends both to Groq using a fixed writing prompt.
+- Streams the output back in real time.
+- Returns a concise cover letter (target: up to 200 words).
+
+## Project Specs
+
+- Framework: Next.js 16 (App Router)
+- UI: React 19.2
+- Styling: Tailwind CSS v4 (`@theme` tokens)
+- Runtime: Node.js 22.x
+- AI SDK: Vercel AI SDK (`ai`, `@ai-sdk/groq`)
+- AI Provider: Groq
+- Model: `openai/gpt-oss-safeguard-20b`
+
+## Prompt Rules Used
+
+The generation prompt enforces:
+
+- 3 short paragraphs
+- Human and professional tone
+- Simple wording (no AI-sounding buzzwords)
+- Proof-based writing from real projects in the resume
+- Clear close with a call to chat
+
+## Prompt Caching Strategy (Groq)
+
+To improve speed and cost:
+
+- Static content is sent in `system`:
+  - fixed instructions
+  - full `resume.md` text
+- Dynamic content is sent in `prompt`:
+  - current job description
+
+This structure improves Groq prompt cache hits because the stable prefix stays the same across requests.
+
+## Current Features
+
+- Job description input
+- Streamed response UI
+- Word count display
+- One-click copy button
+- Dark mode toggle
+- Loading skeleton while generating
+
+## Folder Structure
+
+```txt
+app/
+  api/cover-letter/generate/route.ts
+  globals.css
+  layout.tsx
+  page.tsx
+
+components/
+  ui/
+    button.tsx
+    card.tsx
+    textarea.tsx
+    theme-toggle.tsx
+
+features/
+  cover-letter/
+    components/cover-letter-generator.tsx
+    schema.ts
+
+lib/
+  prompt.ts
+  resume.ts
+
+resume.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env` with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
 
-## Learn More
+## Run Locally
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open `http://localhost:3000`.
