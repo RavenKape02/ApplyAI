@@ -73,9 +73,48 @@ export async function POST(request: Request) {
         );
       }
 
-      return new Response(response.body, {
+      const encoder = new TextEncoder();
+      const openrouterStream = response.body!;
+      const textStream = new ReadableStream({
+        async start(controller) {
+          const reader = openrouterStream.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") {
+                  controller.close();
+                  return;
+                }
+                try {
+                  const json = JSON.parse(data);
+                  const content = json.choices?.[0]?.delta?.content;
+                  if (content) {
+                    controller.enqueue(encoder.encode(content));
+                  }
+                } catch {
+                  // Skip invalid JSON
+                }
+              }
+            }
+          }
+          controller.close();
+        },
+      });
+
+      return new Response(textStream, {
         headers: {
-          "Content-Type": "text/event-stream",
+          "Content-Type": "text/plain; charset=utf-8",
         },
       });
     }
