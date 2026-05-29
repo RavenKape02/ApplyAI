@@ -1,19 +1,29 @@
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 
 import { clearResumeCache } from "@/lib/resume";
 
-const resumePath = path.join(process.cwd(), "resume.md");
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+const RESUME_KEY = "resume:text";
 
 export async function GET() {
   try {
-    const text = await readFile(resumePath, "utf8");
+    const text = await redis.get<string>(RESUME_KEY);
+    if (!text) {
+      return NextResponse.json(
+        { error: "Resume not found." },
+        { status: 404 },
+      );
+    }
     return NextResponse.json({ text });
   } catch {
     return NextResponse.json(
-      { error: "Resume file not found." },
-      { status: 404 },
+      { error: "Failed to fetch resume." },
+      { status: 500 },
     );
   }
 }
@@ -29,7 +39,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    await writeFile(resumePath, body.text, "utf8");
+    await redis.set(RESUME_KEY, body.text);
     clearResumeCache();
 
     return NextResponse.json({ success: true });
