@@ -58,8 +58,8 @@ export default function SettingsPage() {
               onChange={handleModelChange}
               className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
             >
-              <option value="groq">Groq (Llama)</option>
-              <option value="openrouter">OpenRouter (Gemma)</option>
+              <option value="groq">Groq (Llama 3.3 70B)</option>
+              <option value="openrouter">OpenRouter (Llama 3.3 70B)</option>
             </select>
           </div>
           {model === "openrouter" && (

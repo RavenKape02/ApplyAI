@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     }
 
     const result = streamText({
-      model: groq("openai/gpt-oss-safeguard-20b"),
+      model: groq("llama-3.3-70b-versatile"),
       system: `${template.prompt}\n\nResume (plain text reference):\n${resumeText}`,
       prompt: `Job Description:\n${parsed.data.jobDescription}${companyContext}\n\nOutput only the final cover letter body paragraphs. Do not include any greeting, subject line, or sign off.`,
     });
