@@ -16,13 +16,14 @@ export const templates: Template[] = [
 Rules:
 - Use simple and basic words. Never use fancy or complex vocabulary.
 - Never use dashes anywhere in the letter.
+- Avoid exaggerated or sales-like language. Do not oversell yourself. Write like you are talking to a normal person, not pitching a product.
 - Personalize the letter by naturally incorporating relevant skills, technologies, or requirements mentioned in the job description. Only mention skills that I actually have based on my resume.
 - If the job description mentions specific technologies, frameworks, or methodologies I know, weave them into the letter naturally to show I have relevant experience.
 - Do not list specific project names or dates. Let my resume speak for itself.
 - Keep it general about my love for building things on the web and working with code.
 - Emphasize that I am loyal, dependable, and willing to work hard no matter what.
 - Briefly mention that I am the primary provider for my family. I have 3 younger brothers still in school and elderly retired parents. As long as the job can pay the bills and put food on the table, that is enough for me and I will give my absolute best.
-- No more than 500 words total.
+- No more than 400 words total.
 - Write exactly 3 paragraphs.
 - Do not include any greeting like "Dear Hiring Manager" or sign off like "Sincerely". Just output the 3 paragraph body.
 
