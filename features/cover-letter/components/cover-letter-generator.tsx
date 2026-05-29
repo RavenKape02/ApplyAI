@@ -34,6 +34,11 @@ export function CoverLetterGenerator() {
       ? localStorage.getItem("selected-template") || "loyal"
       : "loyal";
 
+  const model =
+    typeof window !== "undefined"
+      ? localStorage.getItem("selected-model") || "groq"
+      : "groq";
+
   function addCompany() {
     setCompanies((prev) => [...prev, createEmptyCompany()]);
   }
@@ -68,6 +73,7 @@ export function CoverLetterGenerator() {
           jobDescription: company.jobDescription,
           companyName: company.companyName || undefined,
           templateId,
+          model,
         }),
         signal: controller.signal,
       });
@@ -112,7 +118,7 @@ export function CoverLetterGenerator() {
 
       return fullText;
     },
-    [templateId],
+    [templateId, model],
   );
 
   async function handleGenerateAll() {

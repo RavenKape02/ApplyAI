@@ -8,6 +8,7 @@ export const coverLetterRequestSchema = z.object({
     .max(12000, "Job description is too long."),
   companyName: z.string().trim().optional(),
   templateId: z.string().trim().optional(),
+  model: z.enum(["groq", "openrouter"]).optional(),
 });
 
 export type CoverLetterRequest = z.infer<typeof coverLetterRequestSchema>;
