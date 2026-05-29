@@ -13,3 +13,7 @@ export async function getResumeText(): Promise<string> {
   cachedResume = resumeText;
   return resumeText;
 }
+
+export function clearResumeCache(): void {
+  cachedResume = null;
+}
